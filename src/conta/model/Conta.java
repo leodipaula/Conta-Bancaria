@@ -1,18 +1,21 @@
 package conta.model;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import conta.util.Cores;
 
 public abstract class Conta {
     private int numero;
     private int agencia;
-    private int tipo;
+    private TipoDaConta tipo;
     private String titular;
     private float saldo;
 
     public Conta(int numero, int agencia, int tipo, String titular, float saldo) {
         this.numero = numero;
         this.agencia = agencia;
-        this.tipo = tipo;
+        this.tipo = TipoDaConta.pegarTipo(tipo);
         this.titular = titular;
         this.saldo = saldo;
     }
@@ -33,12 +36,12 @@ public abstract class Conta {
         this.agencia = agencia;
     }
 
-    public int getTipo() {
+    public TipoDaConta getTipo() {
         return tipo;
     }
 
     public void setTipo(int tipo) {
-        this.tipo = tipo;
+        this.tipo = TipoDaConta.pegarTipo(tipo);
     }
 
     public String getTitular() {
@@ -71,17 +74,6 @@ public abstract class Conta {
     }
 
     public void visualizar() {
-        String tipo = "";
-
-        switch (this.getTipo()) {
-            case 1:
-                tipo = "Conta Corrente";
-                break;
-            case 2:
-                tipo = "Conta Poupança";
-                break;
-        }
-
         System.out.println(
                 Cores.TEXT_RED + "\n\n***********************************************************"
                         + Cores.TEXT_RESET);
@@ -93,5 +85,36 @@ public abstract class Conta {
         System.out.println("Tipo da Conta: " + tipo);
         System.out.println("Titular: " + this.titular);
         System.out.println("Saldo: " + this.saldo);
+    }
+
+    private enum TipoDaConta {
+        CONTACORRENTE(1, "Conta Corrente"), CONTAPOUPANCA(2, "Conta Poupança");
+
+        private final String descricao;
+        private final int codigo;
+        private static final Map<Integer, TipoDaConta> MAP = new HashMap<>();
+
+        static {
+            for (var tipo : values())
+                MAP.put(tipo.codigo, tipo);
+        }
+
+        TipoDaConta(int codigo, String descricao) {
+            this.codigo = codigo;
+            this.descricao = descricao;
+        }
+
+        public static TipoDaConta pegarTipo(int codigo) {
+            return Optional.ofNullable(MAP.get(codigo))
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Código inválido para o tipo da conta " + codigo));
+        }
+
+        @Override
+        public String toString() {
+            return descricao;
+        }
+
+
     }
 }
