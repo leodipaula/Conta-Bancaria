@@ -36,8 +36,8 @@ public abstract class Conta {
         this.agencia = agencia;
     }
 
-    public TipoDaConta getTipo() {
-        return tipo;
+    public int getTipo() {
+        return tipo.codigo;
     }
 
     public void setTipo(int tipo) {
