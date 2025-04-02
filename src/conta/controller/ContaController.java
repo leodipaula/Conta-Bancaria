@@ -32,18 +32,27 @@ public class ContaController implements ContaRepository {
     public void deletar(int numero) {
         var conta = buscarNaCollection(numero);
 
-        if (conta != null) {
+        if (conta != null && conta.getTipo() == 1) {
             if (listaContas.remove(conta))
                 System.out.println("\nA Conta número: " + numero + " foi deletada com sucesso!");
             return;
         }
-        System.out.println("\nA Conta número: " + numero + " não foi encontrada!");
+        System.out.println("\nA Conta número: " + numero
+                + " não foi encontrada ou a conta destino não é uma Conta Corrente!");
     }
 
     @Override
     public void depositar(int numero, float valor) {
-        // TODO Auto-generated method stub
+        var conta = buscarNaCollection(numero);
 
+        if (conta != null) {
+            conta.depositar(valor);
+            System.out.println(
+                    "\nO Depósito na Conta número " + numero + " foi efetuado com sucesso!");
+            return;
+        }
+        System.out.println("\nA Conta número: " + numero
+                + " não foi encontrada ou a Conta destino não é uma Conta Corrente!");
     }
 
     @Override
@@ -65,14 +74,39 @@ public class ContaController implements ContaRepository {
 
     @Override
     public void sacar(int numero, float valor) {
-        // TODO Auto-generated method stub
+        var conta = buscarNaCollection(numero);
 
+        if (conta != null) {
+            if (conta.getSaldo() < valor) {
+                System.out.println("Saldo insuficiente para sacar.");
+                return;
+            }
+            if (conta.sacar(valor)) {
+                System.out.println(
+                        "\nO Saque na Conta número: " + numero + " foi efetuado com sucesso!");
+                return;
+            }
+        }
+        System.out.println("\nA Conta número: " + numero + " não foi encontrada!");
     }
 
     @Override
     public void transferir(int numeroOrigin, int numeroDestino, float valor) {
-        // TODO Auto-generated method stub
+        var contaOrigem = buscarNaCollection(numeroOrigin);
+        var contaDestino = buscarNaCollection(numeroDestino);
 
+        if (contaOrigem != null && contaDestino != null) {
+            if (contaOrigem.getSaldo() < valor) {
+                System.out.println("Saldo insuficiente para realizar a transferência.");
+                return;
+            }
+            if (contaOrigem.sacar(valor)) {
+                contaDestino.depositar(valor);
+                System.out.println("\nA Transferência foi efetuada com sucesso!");
+                return;
+            }
+        }
+        System.out.println("\nA Conta de Origem e/ou Destino não foram encontradas!");
     }
 
     public int gerarNumero() {
