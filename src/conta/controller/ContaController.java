@@ -45,7 +45,7 @@ public class ContaController implements ContaRepository {
     public void depositar(int numero, float valor) {
         var conta = buscarNaCollection(numero);
 
-        if (conta != null) {
+        if (conta != null && conta.getTipo() == 1) {
             conta.depositar(valor);
             System.out.println(
                     "\nO Depósito na Conta número " + numero + " foi efetuado com sucesso!");
@@ -106,8 +106,7 @@ public class ContaController implements ContaRepository {
     }
 
     public Conta buscarNaCollection(int numero) {
-        var contaProcurada = listaContas.stream().filter(conta -> conta.getNumero() == numero)
-                .findAny().orElse(null);
-        return contaProcurada;
+        return listaContas.stream().filter(conta -> conta.getNumero() == numero).findAny()
+                .orElse(null);
     }
 }
