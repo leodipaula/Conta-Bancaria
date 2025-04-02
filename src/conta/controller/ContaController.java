@@ -77,10 +77,6 @@ public class ContaController implements ContaRepository {
         var conta = buscarNaCollection(numero);
 
         if (conta != null) {
-            if (conta.getSaldo() < valor) {
-                System.out.println("Saldo insuficiente para sacar.");
-                return;
-            }
             if (conta.sacar(valor)) {
                 System.out.println(
                         "\nO Saque na Conta número: " + numero + " foi efetuado com sucesso!");
@@ -96,10 +92,6 @@ public class ContaController implements ContaRepository {
         var contaDestino = buscarNaCollection(numeroDestino);
 
         if (contaOrigem != null && contaDestino != null) {
-            if (contaOrigem.getSaldo() < valor) {
-                System.out.println("Saldo insuficiente para realizar a transferência.");
-                return;
-            }
             if (contaOrigem.sacar(valor)) {
                 contaDestino.depositar(valor);
                 System.out.println("\nA Transferência foi efetuada com sucesso!");
